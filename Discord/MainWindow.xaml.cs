@@ -1,47 +1,54 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System;
+﻿using System;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
+using System.Windows;
 
-namespace Discord
+namespace Discord // Your namespace might be different
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private TcpClient? _client;
         private NetworkStream? _stream;
         private Thread? _listenThread;
+        private string? _username;
+
         public MainWindow()
         {
             InitializeComponent();
+            // We no longer connect automatically on startup.
         }
 
+        // This method is now an event handler for your "Connect" button.
         private void ConnectToServer(object sender, RoutedEventArgs e)
         {
+            // 1. Validate username.
+            _username = UserName.Text;
+            if (string.IsNullOrWhiteSpace(_username))
+            {
+                MessageBox.Show("Please enter a username.");
+                return;
+            }
+
             try
             {
-                // 1. Create a new TcpClient and connect to the server.
                 _client = new TcpClient("127.0.0.1", 8888);
                 _stream = _client.GetStream();
 
-                // 2. Start a new thread to listen for messages from the server.
-                // This is crucial to prevent the UI from freezing.
+                // 2. Send the username to the server immediately after connecting.
+                byte[] usernameBytes = Encoding.UTF8.GetBytes(_username);
+                _stream.Write(usernameBytes, 0, usernameBytes.Length);
+
+                // Start listening for messages from the server.
                 _listenThread = new Thread(ListenForMessages);
-                _listenThread.IsBackground = true; // Ensures the thread closes when the app closes.
+                _listenThread.IsBackground = true;
                 _listenThread.Start();
 
                 MessagesListBox.Items.Add("Connected to server!");
+
+                // 3. Update the UI.
+                ConnectButton.IsEnabled = false;
+                UserName.IsEnabled = false;
             }
             catch (Exception ex)
             {
@@ -56,38 +63,50 @@ namespace Discord
 
             try
             {
-                // 3. Loop indefinitely to read messages from the server.
                 while ((byteCount = _stream.Read(buffer, 0, buffer.Length)) > 0)
                 {
-                    string message = Encoding.ASCII.GetString(buffer, 0, byteCount);
+                    string message = Encoding.UTF8.GetString(buffer, 0, byteCount);
 
-                    // 4. IMPORTANT: Update the UI from the UI thread.
-                    // A background thread cannot directly change the UI.
-                    // We must use Dispatcher.Invoke to safely update the ListBox.
-                    Dispatcher.Invoke(() =>
+                    // 4. Check if the message is a user list update.
+                    if (message.StartsWith("§USERLIST§"))
                     {
-                        MessagesListBox.Items.Add(message);
-                    });
+                        // Update the user list box.
+                        string[] users = message.Substring("§USERLIST§".Length).Split(',');
+                        Dispatcher.Invoke(() =>
+                        {
+                            UserListBox.Items.Clear();
+                            foreach (var user in users)
+                            {
+                                UserListBox.Items.Add(user);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        // It's a regular chat message.
+                        Dispatcher.Invoke(() =>
+                        {
+                            MessagesListBox.Items.Add(message);
+                        });
+                    }
                 }
             }
             catch (Exception)
             {
-                // Handle disconnection or other errors.
-                Dispatcher.Invoke(() =>
-                {
-                    MessagesListBox.Items.Add("Server disconnected.");
-                });
+                Dispatcher.Invoke(() => MessagesListBox.Items.Add("Server disconnected."));
             }
         }
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
             string message = MessageTextBox.Text;
-            if (!string.IsNullOrWhiteSpace(message) && _stream != null)
+            if (!string.IsNullOrWhiteSpace(message) && _stream != null && _client.Connected)
             {
+                // We no longer need to prepend "You:". The server handles names.
+                // However, we add it to our own box for immediate feedback.
                 MessagesListBox.Items.Add($"You: {message}");
 
-                byte[] buffer = Encoding.ASCII.GetBytes($"A client says: {message}");
+                byte[] buffer = Encoding.UTF8.GetBytes(message);
                 _stream.Write(buffer, 0, buffer.Length);
 
                 MessageTextBox.Clear();
@@ -95,10 +114,11 @@ namespace Discord
             }
         }
 
-
-        private void UserListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        // Make sure you have this Closing event in your MainWindow.xaml
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
+            _stream?.Close();
+            _client?.Close();
         }
     }
 }

@@ -12,3 +12,4 @@ C:\Users\Manoj\Desktop\Shreyansh\C#\ChatServer\obj\Debug\net9.0\refint\ChatServe
 C:\Users\Manoj\Desktop\Shreyansh\C#\ChatServer\obj\Debug\net9.0\ChatServer.pdb
 C:\Users\Manoj\Desktop\Shreyansh\C#\ChatServer\obj\Debug\net9.0\ChatServer.genruntimeconfig.cache
 C:\Users\Manoj\Desktop\Shreyansh\C#\ChatServer\obj\Debug\net9.0\ref\ChatServer.dll
+C:\Users\Manoj\Desktop\Shreyansh\C#\ChatServer\obj\Debug\net9.0\ChatServer.sourcelink.json
