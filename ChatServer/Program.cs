@@ -34,7 +34,7 @@ namespace ChatServer
                 {
                     // Wait for a client to connect. This line blocks until a connection is made.
                     TcpClient client = server.AcceptTcpClient();
-                    Console.WriteLine("Client connected!");
+                    Console.WriteLine($"Client connected! {client}");
 
                     // Add the new client to our list. The 'lock' ensures that
                     // only one thread can modify the list at a time.

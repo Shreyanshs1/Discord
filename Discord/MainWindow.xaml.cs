@@ -25,10 +25,9 @@ namespace Discord
         public MainWindow()
         {
             InitializeComponent();
-            ConnectToServer();
         }
 
-        private void ConnectToServer()
+        private void ConnectToServer(object sender, RoutedEventArgs e)
         {
             try
             {
