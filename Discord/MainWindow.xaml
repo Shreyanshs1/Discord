@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Discord"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="#fff">
+        Title="WalkieTalkie" Height="450" Width="600" ResizeMode="NoResize" Background="#fff">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="154"/>
+            <ColumnDefinition Width="150"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
@@ -18,24 +18,29 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="140px"/>
             </Grid.RowDefinitions>
-            <ListBox x:Name="UserListBox" Grid.Row="0" Background="#E7DDFF" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,40,0,0"/>
+            <StackPanel Margin="10">
+                <Label Content="Chatt App" Grid.Row="0" Height="30" HorizontalContentAlignment="Center" VerticalAlignment="Top" FontSize="16"/>
+                <ListBox x:Name="UserListBox" Grid.Row="0" Background="#00000000" BorderThickness="0,0,0,0" FontFamily="Segoe UI Symbol" FontSize="14"/>
+            </StackPanel>
             <Image x:Name="UserImage" Grid.Row="1" Width="80" Height="80" VerticalAlignment="Top" Margin="0,10,0,0" Source="/20241021_122254.jpg"/>
-            <TextBox x:Name="UserName" Grid.Row="1" Background="#fff" VerticalAlignment="Bottom" Height="28" Margin="10,0,10,40"/>
-            <Button x:Name="ConnectButton" Grid.Row="1" Content="Connect" Background="#E2EAF4" Height="30" Margin="10,0,10,0" VerticalAlignment="Bottom" Click="ConnectToServer"/>
-            <Label Content="Chatt App" Grid.Row="0" Height="30" HorizontalContentAlignment="Center" VerticalAlignment="Top" FontSize="16"/>
+            <TextBox x:Name="UserName" Grid.Row="1" Background="Black" Foreground="White" VerticalAlignment="Bottom" Height="28" Margin="10,0,10,40"/>
+            <Button x:Name="ConnectButton" Grid.Row="1" Content="Connect" Background="Black" Foreground="White" Height="30" Margin="10,0,10,0" VerticalAlignment="Bottom" Click="ConnectToServer"/>
         </Grid>
 
         <!-- Column 1 Defintions here -->
         <Grid Grid.Column="1" Background="#FFECA1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="20px"/>
+                <RowDefinition Height="40px"/>
             </Grid.RowDefinitions>
+            <ContentControl x:Name="MainContentArea" Grid.Row="0" Margin="10"/>
 
-            <ListBox x:Name="MessagesListBox" Grid.Row="0" Margin="0,0,0,10" BorderBrush="Gray" BorderThickness="1" Background="#00000000" d:ItemsSource="{d:SampleData ItemCount=5}"/>
-            <TextBox x:Name="MessageTextBox" Grid.Row="1" Margin="0,0,85,0" BorderBrush="Gray" BorderThickness="1" Padding="5" Height="28" Background="Black" Foreground="White" TextAlignment="Justify"/>
-            <Button x:Name="SendButton" Content="Send" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Width="80"  Padding="5" Height="28" Margin="546,0,0,0" Background="Black" Foreground="White" Click="SendButton_Click"/>
+            
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Show Chat" Width="120" Margin="5" Padding="10,5" Background="Black" Foreground="White"/>
+                <Button Content="Show Canvas" Width="120" Margin="5" Padding="10,5" Background="Black" Foreground="White"/>
+                <Button Content="Show Settings" Width="120" Margin="5" Padding="10,5" Background="Black" Foreground="White"/>
+            </StackPanel>
         </Grid>
 
     </Grid>

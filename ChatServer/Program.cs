@@ -10,7 +10,6 @@ namespace ChatServer
 {
     class Program
     {
-        // We now use a Dictionary to map each client connection to a username.
         static readonly Dictionary<TcpClient, string> _clients = new Dictionary<TcpClient, string>();
         private static readonly object _lock = new object();
 
@@ -25,7 +24,6 @@ namespace ChatServer
             {
                 TcpClient client = server.AcceptTcpClient();
 
-                // Create a new thread to handle the client, passing the client object.
                 Thread clientThread = new Thread(() => HandleClient(client));
                 clientThread.Start();
             }
