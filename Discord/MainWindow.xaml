@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Discord"
         mc:Ignorable="d"
         Title="WalkieTalkie" Height="450" Width="600" ResizeMode="NoResize" Background="#fff">
-    <Grid Margin="10">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
             <ColumnDefinition/>
@@ -33,7 +33,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="40px"/>
             </Grid.RowDefinitions>
-            <ContentControl x:Name="MainContentArea" Grid.Row="0" Margin="10"/>
+            <ContentControl x:Name="MainContentArea" Grid.Row="0"/>
 
             
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">

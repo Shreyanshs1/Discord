@@ -19,3 +19,5 @@ C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\Discord.pdb
 C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\Discord.genruntimeconfig.cache
 C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\ref\Discord.dll
 C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\Discord.sourcelink.json
+C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\ChatView.g.cs
+C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\ChatView.baml

@@ -12,11 +12,20 @@ namespace Discord // Your namespace might be different
         private NetworkStream? _stream;
         private Thread? _listenThread;
         private string? _username;
+        private readonly ChatView _chatView;
 
         public MainWindow()
         {
             InitializeComponent();
-            // We no longer connect automatically on startup.
+            
+            //initialize different views
+            _chatView = new ChatView();
+
+            //set default view to chatView
+            MainContentArea.Content = _chatView;
+
+            //Listen to events from different views
+            _chatView.MessageSent += HandleMessageSentFromChatView;
         }
 
         // This method is now an event handler for your "Connect" button.
@@ -44,7 +53,7 @@ namespace Discord // Your namespace might be different
                 _listenThread.IsBackground = true;
                 _listenThread.Start();
 
-                MessagesListBox.Items.Add("Connected to server!");
+                _chatView.AddMessage("Connected to server!");
 
                 // 3. Update the UI.
                 ConnectButton.IsEnabled = false;
@@ -53,6 +62,16 @@ namespace Discord // Your namespace might be different
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to connect to server: {ex.Message}");
+            }
+        }
+
+        private async void HandleMessageSentFromChatView(string message)
+        {
+            if (!string.IsNullOrWhiteSpace(message) && _stream != null && _client.Connected)
+            {
+                _chatView.AddMessage($"You: {message}");
+                byte[] buffer = Encoding.UTF8.GetBytes(message);
+                _stream.Write(buffer, 0, buffer.Length);
             }
         }
 
@@ -86,33 +105,33 @@ namespace Discord // Your namespace might be different
                         // It's a regular chat message.
                         Dispatcher.Invoke(() =>
                         {
-                            MessagesListBox.Items.Add(message);
+                            _chatView.AddMessage(message);
                         });
                     }
                 }
             }
             catch (Exception)
             {
-                Dispatcher.Invoke(() => MessagesListBox.Items.Add("Server disconnected."));
+                Dispatcher.Invoke(() => _chatView.AddMessage("Server disconnected."));
             }
         }
 
-        private void SendButton_Click(object sender, RoutedEventArgs e)
-        {
-            string message = MessageTextBox.Text;
-            if (!string.IsNullOrWhiteSpace(message) && _stream != null && _client.Connected)
-            {
-                // We no longer need to prepend "You:". The server handles names.
-                // However, we add it to our own box for immediate feedback.
-                MessagesListBox.Items.Add($"You: {message}");
+        //private void SendButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    string message = MessageTextBox.Text;
+        //    if (!string.IsNullOrWhiteSpace(message) && _stream != null && _client.Connected)
+        //    {
+        //        // We no longer need to prepend "You:". The server handles names.
+        //        // However, we add it to our own box for immediate feedback.
+        //        MessagesListBox.Items.Add($"You: {message}");
 
-                byte[] buffer = Encoding.UTF8.GetBytes(message);
-                _stream.Write(buffer, 0, buffer.Length);
+        //        byte[] buffer = Encoding.UTF8.GetBytes(message);
+        //        _stream.Write(buffer, 0, buffer.Length);
 
-                MessageTextBox.Clear();
-                MessageTextBox.Focus();
-            }
-        }
+        //        MessageTextBox.Clear();
+        //        MessageTextBox.Focus();
+        //    }
+        //}
 
         // Make sure you have this Closing event in your MainWindow.xaml
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
