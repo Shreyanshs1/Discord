@@ -56,9 +56,18 @@ namespace ChatServer
                 // 2. Loop to read chat messages.
                 while ((byteCount = stream.Read(buffer, 0, buffer.Length)) > 0)
                 {
-                    string message = Encoding.ASCII.GetString(buffer, 0, byteCount);
-                    Console.WriteLine($"Message from {username}: {message}");
-                    BroadcastMessage($"{username}: {message}", tcpClient);
+                    string message = Encoding.UTF8.GetString(buffer, 0, byteCount);
+
+                    // *** NEW LOGIC IS HERE ***
+                    if (message.StartsWith("§PAINT§"))
+                    {
+                        // It's a paint message. Broadcast it to everyone else.
+                        BroadcastMessage(message, tcpClient);
+                    }
+                    else
+                    {
+                        BroadcastMessage($"{username}: {message}", tcpClient);
+                    }
                 }
             }
             catch (Exception)

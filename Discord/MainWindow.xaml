@@ -37,8 +37,8 @@
 
             
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Show Chat" Width="120" Margin="5" Padding="10,5" Background="Black" Foreground="White"/>
-                <Button Content="Show Canvas" Width="120" Margin="5" Padding="10,5" Background="Black" Foreground="White"/>
+                <Button Content="Show Chat" Width="120" Margin="5" Padding="10,5" Background="Black" Foreground="White" Click="ShowChatView_Click"/>
+                <Button Content="Show Canvas" Width="120" Margin="5" Padding="10,5" Background="Black" Foreground="White" Click="ShowCanvasView_Click"/>
                 <Button Content="Show Settings" Width="120" Margin="5" Padding="10,5" Background="Black" Foreground="White"/>
             </StackPanel>
         </Grid>

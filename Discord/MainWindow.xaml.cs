@@ -13,6 +13,7 @@ namespace Discord // Your namespace might be different
         private Thread? _listenThread;
         private string? _username;
         private readonly ChatView _chatView;
+        private readonly CanvasView _canvasView;
 
         public MainWindow()
         {
@@ -20,12 +21,15 @@ namespace Discord // Your namespace might be different
             
             //initialize different views
             _chatView = new ChatView();
+            _canvasView = new CanvasView();
 
             //set default view to chatView
             MainContentArea.Content = _chatView;
 
             //Listen to events from different views
             _chatView.MessageSent += HandleMessageSentFromChatView;
+            _canvasView.OnDraw += SendPaintDataToServer;
+
         }
 
         // This method is now an event handler for your "Connect" button.
@@ -65,13 +69,29 @@ namespace Discord // Your namespace might be different
             }
         }
 
-        private async void HandleMessageSentFromChatView(string message)
+        private void HandleMessageSentFromChatView(string message)
         {
             if (!string.IsNullOrWhiteSpace(message) && _stream != null && _client.Connected)
             {
                 _chatView.AddMessage($"You: {message}");
                 byte[] buffer = Encoding.UTF8.GetBytes(message);
                 _stream.Write(buffer, 0, buffer.Length);
+            }
+        }
+
+        private void SendPaintDataToServer(string paintData)
+        {
+            if (_stream != null && _client.Connected)
+            {
+                try
+                {
+                    byte[] buffer = Encoding.UTF8.GetBytes(paintData);
+                    _stream.Write(buffer, 0, buffer.Length);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error sending paint data: {ex.Message}");
+                }
             }
         }
 
@@ -100,6 +120,14 @@ namespace Discord // Your namespace might be different
                             }
                         });
                     }
+                    else if (message.StartsWith("§PAINT§"))
+                    {
+                        // It's paint data! Update the canvas.
+                        Dispatcher.Invoke(() =>
+                        {
+                            _canvasView.DrawLineFromServer(message);
+                        });
+                    }
                     else
                     {
                         // It's a regular chat message.
@@ -116,23 +144,17 @@ namespace Discord // Your namespace might be different
             }
         }
 
-        //private void SendButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    string message = MessageTextBox.Text;
-        //    if (!string.IsNullOrWhiteSpace(message) && _stream != null && _client.Connected)
-        //    {
-        //        // We no longer need to prepend "You:". The server handles names.
-        //        // However, we add it to our own box for immediate feedback.
-        //        MessagesListBox.Items.Add($"You: {message}");
+        private void ShowChatView_Click(object sender, RoutedEventArgs e)
+        {
+            // Set the Content of the ContentControl to our ChatView instance
+            MainContentArea.Content = _chatView;
+        }
 
-        //        byte[] buffer = Encoding.UTF8.GetBytes(message);
-        //        _stream.Write(buffer, 0, buffer.Length);
-
-        //        MessageTextBox.Clear();
-        //        MessageTextBox.Focus();
-        //    }
-        //}
-
+        private void ShowCanvasView_Click(object sender, RoutedEventArgs e)
+        {
+            // Set the Content of the ContentControl to our CanvasView instance
+            MainContentArea.Content = _canvasView;
+        }
         // Make sure you have this Closing event in your MainWindow.xaml
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

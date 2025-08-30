@@ -21,3 +21,5 @@ C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\ref\Discord
 C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\Discord.sourcelink.json
 C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\ChatView.g.cs
 C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\ChatView.baml
+C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\CanvasView.g.cs
+C:\Users\Manoj\Desktop\Shreyansh\C#\Discord\obj\Debug\net9.0-windows\CanvasView.baml
